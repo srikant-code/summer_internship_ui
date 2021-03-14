@@ -121,109 +121,109 @@ const CollectorDashboard = (props) => {
 
   const classes = useStyles();
   return (
-    <Grid container className={classes.root} spacing={2} xs={12}>
+    <Grid container className={ classes.root } spacing={ 2 } xs={ 12 }>
       <Grid
         container
-        style={{ height: '95vh' }}
+        style={ { height: '95vh' } }
         justify="center"
         alignItems="center"
       >
         <Grid
           item
-          style={{
+          style={ {
             height: started ? '90vh' : '45vh',
             width: started ? '60vw' : '40vw',
             backgroundColor: started ? '' : '#252C48',
             display: 'flex',
-          }}
+          } }
           alignItems="center"
           direction="column"
         >
-          <Typography className={classes.textStyle1}>
-            {started ? `Hello ${name}` : 'Hey There !'}
+          <Typography className={ classes.textStyle1 }>
+            { started ? `Hello ${name}` : 'Hey There !' }
           </Typography>
-          <Typography className={classes.textStyle2}>
-            {started
+          <Typography className={ classes.textStyle2 }>
+            { started
               ? ' WELCOME TO SUMMER INTERNSHIP 2021'
-              : `What's your name?`}
+              : `What's your name?` }
           </Typography>
-          {!started ? (
+          { !started ? (
             <>
               <TextField
                 id="outlined-basic"
                 variant="outlined"
                 autoid="ship-to-input"
                 type="text"
-                style={{ marginTop: '4vh' }}
-                value={name}
-                onChange={handleNameChange}
-                InputProps={{
+                style={ { marginTop: '4vh' } }
+                value={ name }
+                onChange={ handleNameChange }
+                InputProps={ {
                   classes: {
                     input: classes.nameInput,
                     notchedOutline: classes.notchedOutline,
                   },
-                }}
+                } }
               />
 
               <Button
                 size="small"
-                className={classes.searchBtnStarted}
-                classes={{ disabled: classes.searchBtnDisabled }}
-                disabled={name == ''}
-                onClick={handleGetStarted}
+                className={ classes.searchBtnStarted }
+                classes={ { disabled: classes.searchBtnDisabled } }
+                disabled={ name === '' }
+                onClick={ handleGetStarted }
               >
                 GET STARTED
               </Button>
             </>
           ) : (
-            <>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: '30vh',
-                  width: '51vw',
-                  marginTop: '5vh',
-                  border: 'solid 1px #5daae0',
-                }}
-              >
-                <Button
-                  size="medium"
-                  className={classes.searchBtn}
-                  onClick={handleGetStarted}
+              <>
+                <div
+                  style={ {
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '30vh',
+                    width: '51vw',
+                    marginTop: '5vh',
+                    border: 'solid 1px #5daae0',
+                  } }
                 >
-                  CLICK HERE TO GET THE COMPLETE SOURCE CODE OF THE PROJECT
+                  <Button
+                    size="medium"
+                    className={ classes.searchBtn }
+                    onClick={ handleGetStarted }
+                  >
+                    CLICK HERE TO GET THE COMPLETE SOURCE CODE OF THE PROJECT
                 </Button>
-                <Button
-                  size="medium"
-                  className={classes.searchBtn}
-                  onClick={handleGetStarted}
-                >
-                  CLICK HERE TO BRIBE YOUR MODERATOR DURING EVALUATION
+                  <Button
+                    size="medium"
+                    className={ classes.searchBtn }
+                    onClick={ handleGetStarted }
+                  >
+                    CLICK HERE TO BRIBE YOUR MODERATOR DURING EVALUATION
                 </Button>
 
-                <Button
-                  size="medium"
-                  className={classes.searchBtn}
-                  onClick={handleGetStarted}
-                >
-                  CLICK HERE TO GET ALL UPCOMING QUIZ ANSWERS BEFOREHAND
+                  <Button
+                    size="medium"
+                    className={ classes.searchBtn }
+                    onClick={ handleGetStarted }
+                  >
+                    CLICK HERE TO GET ALL UPCOMING QUIZ ANSWERS BEFOREHAND
                 </Button>
-              </div>
-              <Typography className={classes.hellotext3}>
-                WITH LOTS OF LOVE,
+                </div>
+                <Typography className={ classes.hellotext3 }>
+                  WITH LOTS OF LOVE,
               </Typography>
-              <Typography className={classes.hellotext4}>
-                Highradius Illuminati
+                <Typography className={ classes.hellotext4 }>
+                  Highradius Illuminati
               </Typography>
-              <Typography className={classes.hellotext2}>
-                THE ILLUMINATI WILL BE THERE WITH YOU ALWAYS...AND WILL HELP YOU
-                WHENEVER YOU ARE STUCK. MAY THE FORCE BE WITH YOU
+                <Typography className={ classes.hellotext2 }>
+                  THE ILLUMINATI WILL BE THERE WITH YOU ALWAYS...AND WILL HELP YOU
+                  WHENEVER YOU ARE STUCK. MAY THE FORCE BE WITH YOU
               </Typography>
-            </>
-          )}
+              </>
+            ) }
         </Grid>
       </Grid>
       <Footer />

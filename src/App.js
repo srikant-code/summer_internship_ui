@@ -4,6 +4,7 @@ import theme from '../src/utils/theme';
 import { makeStyles } from '@material-ui/core';
 import CollectorDashboard from '../src/views/CollectorDashboard';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import Landing from "../src/views/Landing";
 import { ROLL_NUMBER } from '../src/utils/constants';
 
 const useStyles = makeStyles((theme) => ({
@@ -21,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   mainBackground: {
-    background: theme.palette.primary.main,
+    background: "transparent radial-gradient(closest-side at 50% 50%, #58687E 0%, #39495E 100%) 0% 0% no-repeat padding-box;",
     height: '100vh',
     width: '100vw',
     overflow: 'hidden',
@@ -35,12 +36,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 const App = () => {
-  console.log('theme', theme);
   const classes = useStyles();
   return (
-    <div className={classes.mainBackground}>
-      <Router basename={`/${ROLL_NUMBER}`}>
-        <Route exact path="/" component={CollectorDashboard} />
+    <div className={ classes.mainBackground }>
+      <Router basename={ `/${ROLL_NUMBER}` }>
+        <Route exact path="/" component={ Landing } />
       </Router>
     </div>
   );
