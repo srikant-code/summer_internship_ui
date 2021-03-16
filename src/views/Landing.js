@@ -8,13 +8,11 @@ import {
 } from '@material-ui/core';
 import React from 'react'
 import Modal from '../components/Modal'
-import AddIcon from '@material-ui/icons/Add';
-import EditIcon from '@material-ui/icons/Edit';
-import RemoveIcon from '@material-ui/icons/Remove';
 import SearchIcon from '@material-ui/icons/Search';
 import { Header } from '../components/Header';
 import InvoiceTable from '../components/InvoiceTable';
 import { pxToRem, pxToVh, pxToVw } from '../utils/theme';
+import CustomButton from '../components/CustomButton';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -38,14 +36,16 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.colors.color_FFFFFF_WHITE
     },
     tableWrapper: {
-        minHeight: "100%",
+        minHeight: "fit-content",
+        minWidth: "fit-content",
         marginLeft: pxToVw(30),
         marginRight: pxToVw(30),
         marginBottom: pxToVh(30),
         borderRadius: pxToVw(10),
         width: `calc(100vw - 2*${pxToVw(30)})`,
-        height: "100vh",
-        backgroundColor: theme.palette.colors.color_273D49CC
+        height: `calc(100vh - ${pxToVh(200)})`,
+        backgroundColor: theme.palette.colors.color_273D49CC,
+        overflow: "hidden",
     },
     buttonsBar: {
         height: "fit-content",
@@ -55,27 +55,6 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: "space-between",
         alignItems: "center",
     },
-    buttonMain: {
-        borderRadius: pxToVh(10),
-        backgroundColor: theme.palette.colors.color_97A1A9,
-        color: theme.palette.colors.color_FFFFFF_WHITE,
-        textTransform: "capitalize",
-        fontWeight: "normal",
-        fontFamily: "Ubuntu",
-        fontSize: pxToVh(20),
-        marginRight: pxToVw(20),
-    },
-    buttonOutlined: {
-        borderRadius: pxToVh(10),
-        borderColor: theme.palette.colors.color_97A1A9,
-        backgroundColor: theme.palette.colors.color_273D49CC,
-        color: theme.palette.colors.color_97A1A9,
-        textTransform: "capitalize",
-        fontWeight: "normal",
-        fontFamily: "Ubuntu",
-        fontSize: pxToVh(20),
-        marginRight: pxToVw(20),
-    },
     searchOutlined: {
         borderRadius: pxToVh(10),
         border: `${theme.palette.colors.color_97A1A9} solid 1px`,
@@ -84,12 +63,15 @@ const useStyles = makeStyles((theme) => ({
         textTransform: "capitalize",
         fontWeight: "normal",
         fontFamily: "Ubuntu",
+        height: "fit-content",
+        minWidth: "fit-content",
         fontSize: pxToVh(20),
         paddingLeft: pxToVw(20),
         paddingTop: pxToVw(5),
     },
     searchIcon: {
-        color: theme.palette.colors.color_97A1A9
+        color: theme.palette.colors.color_97A1A9,
+        marginTop: "-2px",
     }
 }))
 
@@ -103,40 +85,37 @@ const Landing = () => {
                 <Paper className={ classes.tableWrapper }>
                     <div className={ classes.buttonsBar }>
                         <div>
-                            <Button
-                                className={ classes.buttonMain }
+                            <CustomButton
                                 variant="contained"
-                                elevation={ 0 }>
-                                Predict
-                            </Button>
-                            <Button
-                                className={ classes.buttonOutlined }
-                                variant="outlined">
-                                View Correspondence
-                            </Button>
+                                elevation={ 0 }
+                                onCLick={ null }
+                                buttonText="Predict"
+                            />
+                            <CustomButton
+                                variant="outlined"
+                                buttonText="View Correspondence"
+                            />
                         </div>
                         <div style={ { display: "inherit" } }>
-                            <Button
-                                className={ classes.buttonOutlined }
+                            <CustomButton
                                 variant="outlined"
-                                startIcon={ <AddIcon /> }>
-                                Add
-                            </Button>
-                            <Button
-                                className={ classes.buttonOutlined }
+                                buttonText="Add"
+                                startIcon="AddIcon"
+                            />
+                            <CustomButton
                                 variant="outlined"
-                                startIcon={ <EditIcon /> }>
-                                Edit
-                            </Button>
-                            <Button
-                                className={ classes.buttonOutlined }
+                                buttonText="Edit"
+                                startIcon="EditIcon"
+                            />
+                            <CustomButton
                                 variant="outlined"
-                                startIcon={ <RemoveIcon /> }>
-                                Delete
-                            </Button>
+                                buttonText="Delete"
+                                startIcon="RemoveIcon"
+                            />
                             <Paper component="form" className={ classes.searchOutlined } elevation={ 0 }>
                                 <InputBase
-                                    className={ classes.buttonOutlined }
+                                    className={ classes.searchOutlined }
+                                    style={ { border: "none", marginTop: "-10px", marginLeft: "-20px" } }
                                     placeholder="Search by Invoice Number"
                                     inputProps={ { 'aria-label': 'Search by Invoice Number' } }
                                 />
@@ -144,11 +123,11 @@ const Landing = () => {
                                     <SearchIcon />
                                 </IconButton>
                             </Paper>
-                            {/* <Modal></Modal> */ }
                         </div>
                     </div>
                     <InvoiceTable />
                 </Paper>
+                <Modal></Modal>
             </div>
         </>
     )
