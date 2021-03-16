@@ -23,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
 
 
 export const Header = () => {
-    console.log(logo, Logo)
     const classes = useStyles();
     return (
         <>
