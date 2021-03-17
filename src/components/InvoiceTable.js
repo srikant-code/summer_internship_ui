@@ -9,7 +9,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { formatter } from '../utils/formatter';
 import Checkbox from '@material-ui/core/Checkbox';
-import { pxToRem, pxToVw, pxToVh } from '../utils/theme';
+import { pxToVw, pxToVh } from '../utils/theme';
 
 const StyledTableCell = withStyles((theme) => ({
     root: {
@@ -17,18 +17,18 @@ const StyledTableCell = withStyles((theme) => ({
     },
     head: {
         // backgroundColor: theme.palette.colors.transparent,
-        backgroundColor: "#273D49",
+        backgroundColor: "#2c414e",
         borderBottom: `1px solid ${theme.palette.colors.color_39495E}`,
         color: theme.palette.colors.color_97A1A9,
         border: "none",
         fontSize: pxToVh(18),
-        font: theme.palette.font.ubuntu,
+        fontFamily: theme.palette.font.ubuntu,
     },
     body: {
         fontSize: pxToVh(20),
+        fontFamily: theme.palette.font.ubuntu,
         color: theme.palette.colors.color_FFFFFF_WHITE,
         border: "none",
-        font: theme.palette.font.ubuntu,
         width: "300px",
         '&:first-child': {
             width: "10px",

@@ -1,6 +1,6 @@
 import React from "react"
 import { makeStyles, Button } from '@material-ui/core';
-import { pxToVh, pxToVw } from '../utils/theme';
+import { pxToVh, pxToVw } from '../../utils/theme';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import RemoveIcon from '@material-ui/icons/Remove';
@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.colors.color_FFFFFF_WHITE,
         textTransform: "capitalize",
         fontWeight: "normal",
-        fontFamily: "Ubuntu",
+        fontFamily: theme.palette.font.ubuntu,
         fontSize: pxToVh(20),
         marginRight: pxToVw(20),
         height: "fit-content",
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.colors.color_97A1A9,
         textTransform: "capitalize",
         fontWeight: "normal",
-        fontFamily: "Ubuntu",
+        fontFamily: theme.palette.font.ubuntu,
         fontSize: pxToVh(20),
         marginRight: pxToVw(20),
         height: "fit-content",
@@ -38,8 +38,8 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const CustomButton = (props) => {
-    const classes = useStyles();
-    let icon = null;
+    const classes = useStyles()
+    let icon = null
     switch (props.startIcon) {
         case 'AddIcon': {
             icon = <AddIcon />
@@ -55,15 +55,37 @@ const CustomButton = (props) => {
         }
         default: icon = null
     }
+    let variant = null
+    switch (props.variant) {
+        case "contained": {
+            variant = classes.buttonMain
+            break
+        }
+        case "outlined": {
+            variant = classes.buttonOutlined
+            break
+        }
+        case "text": {
+            variant = classes.buttonOutlined
+            break
+        }
+        default: variant = null
+    }
+
     return (
         <Button
-            className={ props.variant === "contained" ? classes.buttonMain : props.variant === "outlined" ? classes.buttonOutlined : `${classes.buttonActive}${classes.buttonOutlined}` }
+            // { ...props }
+            className={ variant }
             //contained, outlined, active
             variant={ props.variant }
             elevation={ props.elevation }
-            onClick={ props.handler }
-            startIcon={ icon }>
-            {props.buttonText }
+            onClick={ props.clickhandler }
+            startIcon={ icon }
+            style={ {
+                marginRight: props.last ? pxToVh(0) : pxToVw(20),
+            } }
+        >
+            { props.children }
         </Button>
     )
 }
