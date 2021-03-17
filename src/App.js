@@ -1,8 +1,8 @@
 import React from 'react';
 import './App.css';
-import theme from '../src/utils/theme';
+// import theme from '../src/utils/theme';
 import { makeStyles } from '@material-ui/core';
-import CollectorDashboard from '../src/views/CollectorDashboard';
+// import CollectorDashboard from '../src/views/CollectorDashboard';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Landing from "../src/views/Landing";
 import { ROLL_NUMBER } from '../src/utils/constants';

@@ -3,16 +3,19 @@ import {
     IconButton,
     makeStyles,
     Paper,
-    Button,
     Typography
 } from '@material-ui/core';
-import React from 'react'
-import Modal from '../components/Modal'
+import React from 'react';
+import Modal from '../components/templates/Modal';
 import SearchIcon from '@material-ui/icons/Search';
 import { Header } from '../components/Header';
 import InvoiceTable from '../components/InvoiceTable';
-import { pxToRem, pxToVh, pxToVw } from '../utils/theme';
-import CustomButton from '../components/CustomButton';
+import { pxToVh, pxToVw } from '../utils/theme';
+import CustomButton from '../components/templates/CustomButton';
+import { EditModal } from '../components/modals/EditModal';
+import { AddModal } from '../components/modals/AddModal';
+import { DeleteModal } from '../components/modals/DeleteModal';
+import { CorrespondenceModal } from '../components/modals/CorrespondenceModal';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -32,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: pxToVh(20),
         marginLeft: pxToVw(30),
         fontSize: pxToVh(28),
+        fontFamily: theme.palette.font.ubuntu,
         width: "100vw",
         color: theme.palette.colors.color_FFFFFF_WHITE
     },
@@ -71,12 +75,16 @@ const useStyles = makeStyles((theme) => ({
     },
     searchIcon: {
         color: theme.palette.colors.color_97A1A9,
-        marginTop: "-2px",
-    }
+        marginTop: pxToVh(-4),
+    },
+    content: {
+        fontSize: pxToVh(20),
+    },
 }))
 
 const Landing = () => {
-    const classes = useStyles();
+    const classes = useStyles()
+
     return (
         <>
             <Header />
@@ -84,38 +92,22 @@ const Landing = () => {
             <div className={ classes.root }>
                 <Paper className={ classes.tableWrapper }>
                     <div className={ classes.buttonsBar }>
-                        <div>
+                        <div style={ { display: "inherit" } }>
                             <CustomButton
                                 variant="contained"
                                 elevation={ 0 }
-                                onCLick={ null }
-                                buttonText="Predict"
-                            />
-                            <CustomButton
-                                variant="outlined"
-                                buttonText="View Correspondence"
-                            />
+                                cLick={ null }
+                            >Predict</CustomButton>
+                            <CorrespondenceModal />
                         </div>
                         <div style={ { display: "inherit" } }>
-                            <CustomButton
-                                variant="outlined"
-                                buttonText="Add"
-                                startIcon="AddIcon"
-                            />
-                            <CustomButton
-                                variant="outlined"
-                                buttonText="Edit"
-                                startIcon="EditIcon"
-                            />
-                            <CustomButton
-                                variant="outlined"
-                                buttonText="Delete"
-                                startIcon="RemoveIcon"
-                            />
+                            <AddModal />
+                            <EditModal />
+                            <DeleteModal />
                             <Paper component="form" className={ classes.searchOutlined } elevation={ 0 }>
                                 <InputBase
                                     className={ classes.searchOutlined }
-                                    style={ { border: "none", marginTop: "-10px", marginLeft: "-20px" } }
+                                    style={ { border: "none", marginTop: "-3px", marginLeft: pxToVw(-20) } }
                                     placeholder="Search by Invoice Number"
                                     inputProps={ { 'aria-label': 'Search by Invoice Number' } }
                                 />

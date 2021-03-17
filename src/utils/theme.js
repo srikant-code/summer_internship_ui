@@ -33,7 +33,21 @@ export default createMuiTheme({
       transparent: "transparent",
     },
     font: {
-      ubuntu: 'normal normal normal Ubuntu'
+      ubuntu: 'Ubuntu'
+    }
+  },
+  overrides: {
+    MuiInput: {
+      input: {
+        "&::placeholder": {
+          color: "gray",
+          fontSize: pxToVh(20),
+          textDecoration: "none",
+          border: "none",
+        },
+        fontSize: pxToVh(20),
+        color: "white", // if you also want to change the color of the input, this is the prop you'd use
+      }
     }
   }
 });
