@@ -93,7 +93,7 @@ export const AddModal = () => {
                         error={ invoiceNumber === empty ? true : false }
                     />
                     <InputFields
-                        placeholder="Ex: $0"
+                        placeholder="Ex: 0"
                         id="addInvoiceAmount"
                         textLabel="Invoice Amount "
                         required={ true }

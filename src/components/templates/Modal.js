@@ -69,7 +69,8 @@ const DialogContent = withStyles((theme) => ({
         padding: theme.spacing(3),
         backgroundColor: "#2A3E4C",
         color: theme.palette.colors.color_FFFFFF_WHITE,
-        border: "1px solid #1A262F",
+        borderTop: "1px solid #1A262F",
+        borderBottom: "1px solid #1A262F",
     },
 }))(MuiDialogContent);
 
@@ -94,20 +95,21 @@ const Modal = (props) => {
     };
     // const style = useStyles()
 
-    const [age, setAge] = React.useState('');
+    // const [age, setAge] = React.useState('');
 
-    const handleChange = (event) => {
-        setAge(event.target.value);
-    };
-    const handleOpen = () => {
-        setOpen(true);
-    };
+    // const handleChange = (event) => {
+    //     setAge(event.target.value);
+    // };
+    // const handleOpen = () => {
+    //     setOpen(true);
+    // };
     return (
         <div>
             <CustomButton
                 variant={ props.variant }
                 clickhandler={ () => handleClickOpen() }
                 startIcon={ props.startIcon }
+                activeText={props.activeText}
             >{ props.buttontext }</CustomButton>
             <Dialog
                 PaperProps={ {
@@ -121,25 +123,6 @@ const Modal = (props) => {
                 onClose={ handleClose } aria-labelledby="customized-dialog-title" open={ open }>
                 <DialogTitle id="customized-dialog-title" onClose={ handleClose }>
                     <>{ props.buttontext !== "Delete" ? `${props.buttontext} Invoice` : "Delete record(s)?" }</>
-                    {/* <FormControl >
-                        <InputLabel id="demo-controlled-open-select-label">Age</InputLabel>
-                        <Select
-                            labelId="demo-controlled-open-select-label"
-                            id="demo-controlled-open-select"
-                            open={ open }
-                            onClose={ handleClose }
-                            onOpen={ handleOpen }
-                            value={ age }
-                            onChange={ handleChange }
-                        >
-                            <MenuItem value="">
-                                <em>None</em>
-                            </MenuItem>
-                            <MenuItem value={ 10 }>Ten</MenuItem>
-                            <MenuItem value={ 20 }>Twenty</MenuItem>
-                            <MenuItem value={ 30 }>Thirty</MenuItem>
-                        </Select>
-                    </FormControl> */}
                 </DialogTitle>
                 <DialogContent dividers>
                     { props.children }
@@ -155,6 +138,7 @@ const Modal = (props) => {
                             <CustomButton
                                 variant="outlined"
                                 clickhandler={ () => handleClose() }
+                                activeText={true}
                             >Reset</CustomButton>
                         </>
                         : ""
@@ -163,6 +147,7 @@ const Modal = (props) => {
                         variant="contained"
                         buttontext={ props.buttontext !== "Edit" ? props.buttontext : "Save" }
                         clickhandler={ () => handleClose() }
+                        autoFocus={true}
                     />
                     {/* <CustomButton
                         variant="contained"

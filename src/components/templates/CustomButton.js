@@ -81,8 +81,10 @@ const CustomButton = (props) => {
             elevation={ props.elevation }
             onClick={ props.clickhandler }
             startIcon={ icon }
+            autoFocus={props.autoFocus}
             style={ {
                 marginRight: props.last ? pxToVh(0) : pxToVw(20),
+                borderColor: props.activeText ? "#14AFF1" : "#97A1A9",
             } }
         >
             { props.children }
