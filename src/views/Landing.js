@@ -110,8 +110,14 @@ const Landing = () => {
                                     style={ { border: "none", marginTop: "-3px", marginLeft: pxToVw(-20) } }
                                     placeholder="Search by Invoice Number"
                                     inputProps={ { 'aria-label': 'Search by Invoice Number' } }
+                                    
                                 />
-                                <IconButton type="submit" className={ classes.searchIcon } aria-label="search">
+                                <IconButton type="submit"
+                                    className={ classes.searchIcon } 
+                                    aria-label="search"
+                                    onSubmit={(event) => event.preventDefault()}
+                                    onClick={(event) => event.preventDefault()}
+                                >
                                     <SearchIcon />
                                 </IconButton>
                             </Paper>

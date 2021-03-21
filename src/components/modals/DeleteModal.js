@@ -29,6 +29,7 @@ export const DeleteModal = () => {
             variant="outlined"
             buttontext="Delete"
             startIcon="RemoveIcon"
+            activeText={true}
         >
             <Typography className={ classes.text }>You'll lose your record(s) after this action. We can't recover<br />them once you delete.
                 <br /><br />Are you sure you want to <span className={ classes.warning }>permanently delete</span> them?</Typography>

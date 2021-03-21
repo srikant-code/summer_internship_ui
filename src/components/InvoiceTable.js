@@ -1,15 +1,22 @@
 import React from 'react';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import { useCallback } from "react";
+import {
+    Table,
+    TableContainer,
+    TableBody,
+    TableCell,
+    TableRow,
+    TableHead,
+    Paper,
+    CircularProgress,
+    makeStyles,
+    withStyles,
+    Checkbox,
+} from "@material-ui/core";
 import { formatter } from '../utils/formatter';
-import Checkbox from '@material-ui/core/Checkbox';
 import { pxToVw, pxToVh } from '../utils/theme';
+import axios from "axios";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const StyledTableCell = withStyles((theme) => ({
     root: {
@@ -84,7 +91,7 @@ const rows = [
 
 const useStyles = makeStyles((theme) => ({
     tableContainer: {
-        height: "80vh",
+        height: "70vh",
         width: `calc(100vw - 2*${pxToVw(60)})`,
         backgroundColor: "transparent",
         overflow: "scroll",
@@ -108,13 +115,63 @@ const checkBoxStyles = theme => ({
 const CustomCheckbox = withStyles(checkBoxStyles)(Checkbox);
 
 const InvoiceTable = () => {
-    const [selected, setSelected] = React.useState([]);
+
     const classes = useStyles();
+    let [responseData, setResponseData] = React.useState([]);
+    let [isNext, setIsNext] = React.useState(false);
+    let [pageNumber, setPageNumber] = React.useState(0);
+    let limit = 15;
+    // const fetchData = useCallback(() => {      
+    //     setPageNumber(pageNumber + 1) 
+    //     let URL = `http://localhost:8080/Summer_Internship_Backend/api/v1/invoices?page=${pageNumber}&limit=${limit}`;
+    //     axios
+    //         .get(URL)
+    //         .then((response) => {
+    //             setResponseData([...responseData, ...response.data]);
+    //             console.log(response);
+    //         })
+    //         .catch((error) => {
+    //             console.log(error);
+    //         });
+    // }, [responseData, URL, pageNumber]);
+
+     const fetchData = () => {      
+        console.log("inside fetchdata")      
+        setPageNumber(pageNumber + 1)
+        let URL = `http://localhost:8080/Summer_Internship_Backend/api/v1/invoices?page=${pageNumber}&limit=${limit}`;
+        axios
+            .get(URL)
+            .then((response) => {
+                setResponseData([...responseData, ...response.data]);
+                console.log(response);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };    
+
+    // const getNextData = useCallback(() => {
+    //     // if (pageNumber >= 10) {
+    //     //     setIsNext(false);
+    //     // }
+    //     fetchData();
+    // }, [pageNumber, fetchData]);
+
+    React.useEffect(() => {
+        fetchData();        
+        setIsNext(true);  
+        console.log("inside useffect")      
+    }, []);
+
+
+
+    const [selected, setSelected] = React.useState([]);
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const selectedAll = rows.map((n) => n.invoice);
+            const selectedAll = responseData.map((n) => n.doc_id);
             setSelected(selectedAll);
+            console.log(responseData.length)
             return;
         }
         setSelected([]);
@@ -142,53 +199,78 @@ const InvoiceTable = () => {
     // if ID is selected
     const isSelected = (ID) => selected.indexOf(ID) !== -1;
     return (
-        <TableContainer component={ Paper } className={ classes.tableContainer }>
-            <Table size="medium" className={ classes.table } stickyHeader aria-label="sticky dense table" >
-                <TableHead onClick={ handleSelectAllClick }>
-                    <TableRow>
-                        <StyledTableCell align="left" title="Select">
-                            <CustomCheckbox size="medium" />
-                        </StyledTableCell>
-                        <StyledTableCell align="left" title="Customer&nbsp;Name">Customer&nbsp;Name</StyledTableCell>
-                        <StyledTableCell align="left" title="Customer</">Customer&nbsp;#</StyledTableCell>
-                        <StyledTableCell align="left" title="Invoice</">Invoice&nbsp;#</StyledTableCell>
-                        <StyledTableCell align="right" title="Invoice&nbsp;Amount">Invoice&nbsp;Amount&nbsp;(g)</StyledTableCell>
-                        <StyledTableCell align="right" title="Due&nbsp;Date">Due&nbsp;Date&nbsp;(g)</StyledTableCell>
-                        <StyledTableCell align="right" title="Predicted&nbsp;Payment Date">Predicted&nbsp;Payment&nbsp;Date&nbsp;(g)</StyledTableCell>
-                        <StyledTableCell align="left" title="Predicted&nbsp;Aging">Predicted&nbsp;Aging&nbsp;Bucket&nbsp;(g)</StyledTableCell>
-                        <StyledTableCell align="left" title="Notes">Notes&nbsp;(g)</StyledTableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    { rows.map((row, index) => {
-                        const isItemSelected = isSelected(row.invoice)
-                        const labelId = `enhanced-table-checkbox-${index}`
-                        return (
-                            <StyledTableRow hover key={ row.invoice }
-                                onClick={ (event) => handleClick(event, row.invoice) }
-                                role="checkbox"
-                                aria-checked={ isItemSelected }
-                                tabIndex={ index }
-                            >
-                                <StyledTableCell align="left" title="Select">
-                                    <CustomCheckbox
-                                        checked={ isItemSelected }
-                                        inputProps={ { 'aria-labelledby': labelId } }
-                                    />
-                                </StyledTableCell>
-                                <StyledTableCell component="th" id={ labelId } scope="row">{ row.custName }</StyledTableCell>
-                                <StyledTableCell align="left" title={ row.customerID } >{ row.customerID }</StyledTableCell>
-                                <StyledTableCell align="left" title={ row.invoice } >{ row.invoice }</StyledTableCell>
-                                <StyledTableCell align="right" title={ row.invAmount } >{ row.invAmount }</StyledTableCell>
-                                <StyledTableCell align="right" title={ row.dueDate } >{ row.dueDate }</StyledTableCell>
-                                <StyledTableCell align="right" title={ row.predPayDate } >{ row.predPayDate }</StyledTableCell>
-                                <StyledTableCell align="left" title={ row.predAgeBucket } >{ row.predAgeBucket }</StyledTableCell>
-                                <StyledTableCell align="left" title={ row.notes } >{ row.notes }</StyledTableCell>
-                            </StyledTableRow>
-                        )
-                    }) }
-                </TableBody>
-            </Table>
+        <TableContainer id="scrollableDiv" component={ Paper } className={ classes.tableContainer }>
+            <InfiniteScroll
+                dataLength={ responseData.length }
+                next={() => {
+                    // console.log("inside infinite")
+                    fetchData()
+                 }}
+                hasMore={ isNext }
+                scrollableTarget="scrollableDiv"
+                loader={
+                    <div style={{ 
+                        justifyContent: "center", 
+                        display: "flex", 
+                        flexDirection: "column",        
+                        alignItems: "center",
+                        height: "80%", 
+                        overflow: "hidden",
+                        padding: "3rem"
+                    }}>
+                        <CircularProgress size={50} style={{color: "#C0C6CA"}}/>
+                        <p style={ { color: "#C0C6CA", fontSize: pxToVh(18), fontFamily: "Ubuntu" } }>Loading</p>
+                    </div>
+                }
+                useWindow={ false }
+            >
+                <Table size="medium" className={ classes.table } stickyHeader aria-label="sticky dense table" >
+                    <TableHead onClick={ handleSelectAllClick }>
+                        <TableRow>
+                            <StyledTableCell align="left" title="Select">
+                                <CustomCheckbox size="medium" />
+                            </StyledTableCell>
+                            <StyledTableCell align="left" title="Customer&nbsp;Name">Customer&nbsp;Name</StyledTableCell>
+                            <StyledTableCell align="left" title="Customer</">Customer&nbsp;#</StyledTableCell>
+                            <StyledTableCell align="left" title="Invoice</">Invoice&nbsp;#</StyledTableCell>
+                            <StyledTableCell align="right" title="Invoice&nbsp;Amount">Invoice&nbsp;Amount&nbsp;(g)</StyledTableCell>
+                            <StyledTableCell align="right" title="Due&nbsp;Date">Due&nbsp;Date&nbsp;(g)</StyledTableCell>
+                            <StyledTableCell align="right" title="Predicted&nbsp;Payment Date">Delay</StyledTableCell>
+                            <StyledTableCell align="left" title="Predicted&nbsp;Aging">Predicted&nbsp;Aging&nbsp;Bucket&nbsp;</StyledTableCell>
+                            <StyledTableCell align="left" title="Notes">Notes</StyledTableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        { responseData.map((row, index) => {
+                            const isItemSelected = isSelected(row.doc_id)
+                            const labelId = `enhanced-table-checkbox-${index}`
+                            return (
+                                <StyledTableRow hover key={ row.doc_id }
+                                    onClick={ (event) => handleClick(event, row.doc_id) }
+                                    role="checkbox"
+                                    aria-checked={ isItemSelected }
+                                    tabIndex={ index }
+                                >
+                                    <StyledTableCell align="left" title="Select">
+                                        <CustomCheckbox
+                                            checked={ isItemSelected }
+                                            inputProps={ { 'aria-labelledby': labelId } }
+                                        />
+                                    </StyledTableCell>
+                                    <StyledTableCell component="th" id={ labelId } scope="row">{ row.name_customer ? row.name_customer : "--" }</StyledTableCell>
+                                    <StyledTableCell align="left" title={ row.cust_number } >{ row.cust_number ? row.cust_number : "--" }</StyledTableCell>
+                                    <StyledTableCell align="left" title={ row.doc_id } >{ row.doc_id ? row.doc_id : "--" }</StyledTableCell>
+                                    <StyledTableCell align="right" title={ row.total_open_amount } > { row.total_open_amount ? "$" + formatter(row.total_open_amount) : "--" }</StyledTableCell>
+                                    <StyledTableCell align="right" title={ row.due_in_date } >{ row.due_in_date ? row.due_in_date : "--" }</StyledTableCell>
+                                    <StyledTableCell align="right" title={ row.predPayDate } >{ row.predPayDate ? row.predPayDate : "--" }</StyledTableCell>
+                                    <StyledTableCell align="left" title={ row.delayinc } >{ row.delayinc ? row.predAgeBucket : "--" } days</StyledTableCell>
+                                    <StyledTableCell align="left" title={ row.notes } >{ row.notes ? row.notes : "Lorem Ipsum dolor..." }</StyledTableCell>
+                                </StyledTableRow>
+                            )
+                        }) }
+                    </TableBody>
+                </Table>
+            </InfiniteScroll>
         </TableContainer>
     );
 }
