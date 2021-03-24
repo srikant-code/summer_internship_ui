@@ -37,6 +37,7 @@ export const CorrespondenceModal = () => {
             variant="outlined"
             buttontext="View Correspondence"
         >
+            <h2>Template 1</h2>
             <Typography className={ classes.text }>
                 Subject: <WhiteText text="Invoice Details - {Account Name}" />
                 <br /><br />
@@ -63,6 +64,7 @@ export const CorrespondenceModal = () => {
                 <br /><br />
             </Typography>
 
+            <h2>Template 2</h2>
             <Typography className={ classes.text }>
                 Subject: <WhiteText text="Invoice Details - {Account Name}" />
                 <br /><br />

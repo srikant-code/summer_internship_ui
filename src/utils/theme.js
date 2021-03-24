@@ -46,7 +46,7 @@ export default createMuiTheme({
           border: "none",
         },
         fontSize: pxToVh(20),
-        color: "white", // if you also want to change the color of the input, this is the prop you'd use
+        color: "white",
       }
     }
   }

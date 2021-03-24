@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import theme, { pxToVh } from '../utils/theme';
 import { makeStyles } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Footer from '../components/Footer';
 import { Typography } from '@material-ui/core';
-import { InputBase, TextField, OutlinedInput, Button } from '@material-ui/core';
+import { TextField, Button } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -96,7 +95,6 @@ const useStyles = makeStyles((theme) => ({
     minHeight: '2.188vw',
     fontSize: '0.95vw',
     border: 'solid 0.75px #3B617C',
-    // marginRight: '0.5rem',
     alignSelf: 'center',
     color: '#5DAAE0',
     '&:hover': {
@@ -176,54 +174,54 @@ const CollectorDashboard = (props) => {
               </Button>
             </>
           ) : (
-              <>
-                <div
-                  style={ {
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: '30vh',
-                    width: '51vw',
-                    marginTop: '5vh',
-                    border: 'solid 1px #5daae0',
-                  } }
+            <>
+              <div
+                style={ {
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '30vh',
+                  width: '51vw',
+                  marginTop: '5vh',
+                  border: 'solid 1px #5daae0',
+                } }
+              >
+                <Button
+                  size="medium"
+                  className={ classes.searchBtn }
+                  onClick={ handleGetStarted }
                 >
-                  <Button
-                    size="medium"
-                    className={ classes.searchBtn }
-                    onClick={ handleGetStarted }
-                  >
-                    CLICK HERE TO GET THE COMPLETE SOURCE CODE OF THE PROJECT
+                  CLICK HERE TO GET THE COMPLETE SOURCE CODE OF THE PROJECT
                 </Button>
-                  <Button
-                    size="medium"
-                    className={ classes.searchBtn }
-                    onClick={ handleGetStarted }
-                  >
-                    CLICK HERE TO BRIBE YOUR MODERATOR DURING EVALUATION
+                <Button
+                  size="medium"
+                  className={ classes.searchBtn }
+                  onClick={ handleGetStarted }
+                >
+                  CLICK HERE TO BRIBE YOUR MODERATOR DURING EVALUATION
                 </Button>
 
-                  <Button
-                    size="medium"
-                    className={ classes.searchBtn }
-                    onClick={ handleGetStarted }
-                  >
-                    CLICK HERE TO GET ALL UPCOMING QUIZ ANSWERS BEFOREHAND
+                <Button
+                  size="medium"
+                  className={ classes.searchBtn }
+                  onClick={ handleGetStarted }
+                >
+                  CLICK HERE TO GET ALL UPCOMING QUIZ ANSWERS BEFOREHAND
                 </Button>
-                </div>
-                <Typography className={ classes.hellotext3 }>
-                  WITH LOTS OF LOVE,
+              </div>
+              <Typography className={ classes.hellotext3 }>
+                WITH LOTS OF LOVE,
               </Typography>
-                <Typography className={ classes.hellotext4 }>
-                  Highradius Illuminati
+              <Typography className={ classes.hellotext4 }>
+                Highradius Illuminati
               </Typography>
-                <Typography className={ classes.hellotext2 }>
-                  THE ILLUMINATI WILL BE THERE WITH YOU ALWAYS...AND WILL HELP YOU
-                  WHENEVER YOU ARE STUCK. MAY THE FORCE BE WITH YOU
+              <Typography className={ classes.hellotext2 }>
+                THE ILLUMINATI WILL BE THERE WITH YOU ALWAYS...AND WILL HELP YOU
+                WHENEVER YOU ARE STUCK. MAY THE FORCE BE WITH YOU
               </Typography>
-              </>
-            ) }
+            </>
+          ) }
         </Grid>
       </Grid>
       <Footer />

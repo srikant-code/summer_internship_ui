@@ -1,5 +1,4 @@
 import React from 'react';
-import { useCallback } from "react";
 import {
     Table,
     TableContainer,
@@ -17,13 +16,17 @@ import { formatter } from '../utils/formatter';
 import { pxToVw, pxToVh } from '../utils/theme';
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
+import {
+    useSelector,
+    useDispatch
+} from 'react-redux';
+import { selectInvoice } from "../actions/Actions";
 
 const StyledTableCell = withStyles((theme) => ({
     root: {
         padding: "10px",
     },
     head: {
-        // backgroundColor: theme.palette.colors.transparent,
         backgroundColor: "#2c414e",
         borderBottom: `1px solid ${theme.palette.colors.color_39495E}`,
         color: theme.palette.colors.color_97A1A9,
@@ -50,7 +53,6 @@ const StyledTableRow = withStyles((theme) => ({
             backgroundColor: `${theme.palette.colors.color_2A5368} !important`,
         },
         '&:hover > *': {
-            // color: `${theme.palette.colors.color_97A1A9} !important`,
             color: `${theme.palette.colors.color_FFFFFF_WHITE} !important`,
         },
         '&:nth-of-type(even)': {
@@ -62,32 +64,6 @@ const StyledTableRow = withStyles((theme) => ({
     },
 }))(TableRow);
 
-function createData(custName, customerID, invoice, invAmount, dueDate, predPayDate, predAgeBucket, notes) {
-    return { custName, customerID, invoice, invAmount, dueDate, predPayDate, predAgeBucket, notes };
-}
-
-const rows = [
-    createData('Andrea', 1597960, 68907670, formatter(24786986), "4-12-2019", "4-12-2019", "01-30 days", "Any notes to add"),
-    createData('Andrea Hitler', 1597961, 89076720, formatter(24786), "4-12-2019", "4-12-2019", "01-30 days", "Any notes to add"),
-    createData('Andrea James', 1597962, 69076720, formatter(86986), "4-12-2019", "4-12-2019", "01-30 days", "Any notes to add"),
-    createData('Andrea Ponting', 1597963, 68076720, formatter(86), "4-12-2019", "4-12-2019", "01-30 days", "Any notes to add"),
-    createData('Andrea Jil', 1597964, 68907720, formatter(6986), "4-12-2019", "4-12-2019", "01-30 days", "Any notes to add"),
-    createData('Andrea Siri', 1597965, 68976720, formatter(8686), "4-12-2019", "4-12-2019", "01-30 days", "Any notes to add"),
-    createData('Andrea Ant', 1597966, 6876720, formatter(986), "4-12-2019", "4-12-2019", "01-30 days", "Any notes to add"),
-
-    createData('Andrea', 1597960, 6890760, formatter(786986), "4-12-2019", "4-12-2019", "01-30 days", "Any notes to add"),
-    createData('Andrea Hitler', 1597961, 6076720, formatter(4786), "4-12-2019", "4-12-2019", "01-30 days", "Any notes to add"),
-    createData('Andrea James', 1597962, 676720, formatter(8986), "4-12-2019", "4-12-2019", "01-30 days", "Any notes to add"),
-    createData('Andrea Ponting', 1597963, 6906720, formatter(6), "4-12-2019", "4-12-2019", "01-30 days", "Any notes to add"),
-    createData('Andrea Jil', 1597964, 60, formatter(696), "4-12-2019", "4-12-2019", "01-30 days", "Any notes to add"),
-    createData('Andrea Siri', 1597965, 76720, formatter(686), "4-12-2019", "4-12-2019", "01-30 days", "Any notes to add"),
-    createData('Andrea Ant', 1597966, 68720, formatter(96), "4-12-2019", "4-12-2019", "01-30 days", "Any notes to add"),
-    //TODO: add -- for empty values
-    // createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    // createData('Eclair', 262, 16.0, 24, 6.0),
-    // createData('Cupcake', 305, 3.7, 67, 4.3),
-    // createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
 
 const useStyles = makeStyles((theme) => ({
     tableContainer: {
@@ -95,7 +71,6 @@ const useStyles = makeStyles((theme) => ({
         width: `calc(100vw - 2*${pxToVw(60)})`,
         backgroundColor: "transparent",
         overflow: "scroll",
-        // width: `calc(100% - ${2 * pxToVw(30)}) !important`,
         padding: `${pxToVh(0)} 30px`,
     },
     table: {
@@ -114,54 +89,101 @@ const checkBoxStyles = theme => ({
 })
 const CustomCheckbox = withStyles(checkBoxStyles)(Checkbox);
 
-const InvoiceTable = () => {
+const useDebounce = (value, delay) => {
+    const [debouncedValue, setDebouncedValue] = React.useState(value);
+
+    React.useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedValue(value);
+        }, delay);
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [value, delay]);
+
+    return debouncedValue;
+}
+
+
+const InvoiceTable = (props) => {
 
     const classes = useStyles();
+    const dispatch = useDispatch()
     let [responseData, setResponseData] = React.useState([]);
     let [isNext, setIsNext] = React.useState(false);
     let [pageNumber, setPageNumber] = React.useState(0);
     let limit = 15;
-    // const fetchData = useCallback(() => {      
-    //     setPageNumber(pageNumber + 1) 
-    //     let URL = `http://localhost:8080/Summer_Internship_Backend/api/v1/invoices?page=${pageNumber}&limit=${limit}`;
-    //     axios
-    //         .get(URL)
-    //         .then((response) => {
-    //             setResponseData([...responseData, ...response.data]);
-    //             console.log(response);
-    //         })
-    //         .catch((error) => {
-    //             console.log(error);
-    //         });
-    // }, [responseData, URL, pageNumber]);
+    let [last, setLast] = React.useState(0);
 
-     const fetchData = () => {      
-        console.log("inside fetchdata")      
+    const [, setResults] = React.useState([]);
+    const [, setIsSearching] = React.useState(false);
+    // const [noValue, setnoValue] = React.useState(false);
+
+    // const IsnoValue = (result) => {
+    //     if (result.length === 0) {
+    //         return 1;
+    //     }
+    //     return null;
+    // }
+
+    const searchterm = useSelector(state => state.search.searchTerm)
+    console.log(searchterm)
+    const debouncedSearchTerm = useDebounce(searchterm, 3000);
+
+    const fetchData = (filter) => {
+        console.log("inside fetchdata")
         setPageNumber(pageNumber + 1)
+        let flag;
         let URL = `http://localhost:8080/Summer_Internship_Backend/api/v1/invoices?page=${pageNumber}&limit=${limit}`;
+        setLast(filter)
+        if (filter !== "") {
+            if (filter.length !== last.length)
+                pageNumber = 0
+            URL = `http://localhost:8080/Summer_Internship_Backend/api/v1/invoices?id=${filter}&page=${pageNumber}&limit=${limit}`;
+            flag = 1
+        }
         axios
             .get(URL)
             .then((response) => {
                 setResponseData([...responseData, ...response.data]);
+                if (flag === 1) {
+                    setResponseData([...response.data])
+                }
                 console.log(response);
             })
             .catch((error) => {
                 console.log(error);
             });
-    };    
-
-    // const getNextData = useCallback(() => {
-    //     // if (pageNumber >= 10) {
-    //     //     setIsNext(false);
-    //     // }
-    //     fetchData();
-    // }, [pageNumber, fetchData]);
+        console.log("ping data", responseData)
+        console.log("ping data", URL)
+    };
 
     React.useEffect(() => {
-        fetchData();        
-        setIsNext(true);  
-        console.log("inside useffect")      
-    }, []);
+        if (debouncedSearchTerm) {
+            setIsSearching(true);
+            // const filter = authors.filter((autho) => {
+            //     return autho.author
+            //         .toLowerCase()
+            //         .startsWith(debouncedSearchTerm.toLowerCase());
+            // });
+            // FetchData(debouncedSearchTerm);
+            console.log(debouncedSearchTerm)
+            fetchData(debouncedSearchTerm)
+            setIsSearching(false)
+            // if (IsnoValue(filter) === 1) {
+            //     setnoValue(true);
+            // } else {
+            //     setnoValue(false);
+            //     setResults(filter);
+            // }
+        } else {
+            setResults([]);
+            fetchData("")
+        }
+
+        setIsNext(true);
+        console.log("inside useffect")
+    }, [debouncedSearchTerm]);
 
 
 
@@ -195,30 +217,34 @@ const InvoiceTable = () => {
             );
         }
         setSelected(newSelected)
+        dispatch(selectInvoice(newSelected))
     }
+
+    // if (props.text !== "")
+    //     setResponseData(props.searchResults)
     // if ID is selected
     const isSelected = (ID) => selected.indexOf(ID) !== -1;
     return (
         <TableContainer id="scrollableDiv" component={ Paper } className={ classes.tableContainer }>
             <InfiniteScroll
                 dataLength={ responseData.length }
-                next={() => {
+                next={ () => {
                     // console.log("inside infinite")
-                    fetchData()
-                 }}
+                    fetchData(debouncedSearchTerm === "" ? "" : debouncedSearchTerm)
+                } }
                 hasMore={ isNext }
                 scrollableTarget="scrollableDiv"
                 loader={
-                    <div style={{ 
-                        justifyContent: "center", 
-                        display: "flex", 
-                        flexDirection: "column",        
+                    <div style={ {
+                        justifyContent: "center",
+                        display: "flex",
+                        flexDirection: "column",
                         alignItems: "center",
-                        height: "80%", 
+                        height: "80%",
                         overflow: "hidden",
                         padding: "3rem"
-                    }}>
-                        <CircularProgress size={50} style={{color: "#C0C6CA"}}/>
+                    } }>
+                        <CircularProgress size={ 50 } style={ { color: "#C0C6CA" } } />
                         <p style={ { color: "#C0C6CA", fontSize: pxToVh(18), fontFamily: "Ubuntu" } }>Loading</p>
                     </div>
                 }
@@ -262,7 +288,7 @@ const InvoiceTable = () => {
                                     <StyledTableCell align="left" title={ row.doc_id } >{ row.doc_id ? row.doc_id : "--" }</StyledTableCell>
                                     <StyledTableCell align="right" title={ row.total_open_amount } > { row.total_open_amount ? "$" + formatter(row.total_open_amount) : "--" }</StyledTableCell>
                                     <StyledTableCell align="right" title={ row.due_in_date } >{ row.due_in_date ? row.due_in_date : "--" }</StyledTableCell>
-                                    <StyledTableCell align="right" title={ row.predPayDate } >{ row.predPayDate ? row.predPayDate : "--" }</StyledTableCell>
+                                    <StyledTableCell align="right" title={ row.predPayDate } >{ row.predPayDate ? row.predPayDate : "--" } days</StyledTableCell>
                                     <StyledTableCell align="left" title={ row.delayinc } >{ row.delayinc ? row.predAgeBucket : "--" } days</StyledTableCell>
                                     <StyledTableCell align="left" title={ row.notes } >{ row.notes ? row.notes : "Lorem Ipsum dolor..." }</StyledTableCell>
                                 </StyledTableRow>

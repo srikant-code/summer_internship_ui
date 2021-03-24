@@ -6,7 +6,10 @@ import {
 import Modal from '../templates/Modal';
 import InputFields from '../templates/InputFields';
 import { pxToVw } from '../../utils/theme';
-import TextField from '@material-ui/core/TextField';
+import { addInvoice } from "../../actions/Actions";
+import { useSelector, useDispatch } from 'react-redux';
+// import TextField from '@material-ui/core/TextField';
+// import allReducers from "../../reducers/Reducer";
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -21,15 +24,28 @@ const useStyles = makeStyles((theme) => ({
 
 export const AddModal = () => {
     const classes = useStyles()
-    const [customerName, setCustomerName] = React.useState("")
-    const [customerNumber, setCustomerNumber] = React.useState("")
-    const [invoiceNumber, setInvoiceNumber] = React.useState("")
-    const [invoiceAmount, setInvoiceAmount] = React.useState("")
-    const [dueDate, setDueDate] = React.useState("")
-    const [notes, setNotes] = React.useState("")
+    let [customerNameLocal, setCustomerName] = React.useState("")
+    let [customerNumberLocal, setCustomerNumber] = React.useState("")
+    let [invoiceNumberLocal, setInvoiceNumber] = React.useState("")
+    let [invoiceAmountLocal, setInvoiceAmount] = React.useState(0)
+    let [dueDateLocal, setDueDate] = React.useState("")
+    let [notesLocal, setNotes] = React.useState("")
+    // let [validLocal, setValid] = React.useState(false)
+
+    const dispatch = useDispatch()
 
     const empty = ""
-    const [valid, setValid] = React.useState("")
+    const {
+        // customerName,
+        // customerNumber,
+        // invoiceNumber,
+        // invoiceAmount,
+        // dueDate,
+        // notes,
+        valid,
+    } = useSelector(state => state.add);
+    // const reset = useSelector(state => state.add.reset);
+    const selected = useSelector(state => state.selected.selected)
 
     const handleChange = (event) => {
         const ID = event.target.id
@@ -42,18 +58,37 @@ export const AddModal = () => {
         else if (ID === "addInvoiceNumber")
             setInvoiceNumber(value)
         else if (ID === "addInvoiceAmount")
-            setInvoiceAmount(value)
+            setInvoiceAmount(parseFloat(value) === null || isNaN(parseFloat(value)) ? 0 : parseFloat(value))
         else if (ID === "addDueDate")
             setDueDate(value)
         else if (ID === "addNotes")
             setNotes(value)
+
+        dispatch(addInvoice(customerNameLocal,
+            customerNumberLocal,
+            invoiceNumberLocal,
+            invoiceAmountLocal,
+            dueDateLocal,
+            notesLocal,
+            valid))
+
     };
+
+    const resetfields = () => {
+        setCustomerName("")
+        setCustomerNumber("")
+        setInvoiceNumber("")
+        setInvoiceAmount(0)
+        setDueDate("")
+        setNotes("")
+    }
 
     return (
         <Modal
             variant="outlined"
             buttontext="Add"
             startIcon="AddIcon"
+            activeText={ selected.length === 0 ? true : false }
         >
             <Paper component="form"
                 className={ classes.formControl }
@@ -65,10 +100,11 @@ export const AddModal = () => {
                         textLabel="Customer Name "
                         required={ true }
                         rows={ 1 }
-                        value={ customerName }
+                        value={ useSelector(state => state.add.reset) ? resetfields : customerNameLocal }
                         handler={ handleChange }
                         multiline={ false }
-                        error={ customerName === empty ? true : false }
+                        error={ customerNameLocal === empty ? true : false }
+                        name="customer_name"
                     />
                     <InputFields
                         placeholder="Ex: 7160323"
@@ -76,10 +112,11 @@ export const AddModal = () => {
                         textLabel="Customer No. "
                         required={ true }
                         rows={ 1 }
-                        value={ customerNumber }
+                        value={ useSelector(state => state.add.reset) ? resetfields : customerNumberLocal }
                         handler={ handleChange }
                         multiline={ false }
-                        error={ customerNumber === empty ? true : false }
+                        error={ customerNumberLocal === empty ? true : false }
+                        name="customer_number"
                     />
                     <InputFields
                         placeholder="Ex: 231987347"
@@ -87,10 +124,11 @@ export const AddModal = () => {
                         textLabel="Invoice No. "
                         required={ true }
                         rows={ 1 }
-                        value={ invoiceNumber }
+                        value={ useSelector(state => state.add.reset) ? resetfields : invoiceNumberLocal }
                         handler={ handleChange }
                         multiline={ false }
-                        error={ invoiceNumber === empty ? true : false }
+                        error={ invoiceNumberLocal === empty ? true : false }
+                        name="id"
                     />
                     <InputFields
                         placeholder="Ex: 0"
@@ -98,11 +136,16 @@ export const AddModal = () => {
                         textLabel="Invoice Amount "
                         required={ true }
                         rows={ 1 }
-                        value={ invoiceAmount }
+                        // value={ isNaN(parseFloat(invoiceAmountLocal)) ?
+                        //     0 : isNaN(parseFloat(invoiceAmount))
+                        //         ? parseFloat(invoiceAmount) === 0 || reset ? parseFloat(invoiceAmount) : parseFloat(invoiceAmountLocal) : 0 }
+                        value={ useSelector(state => state.add.reset) ? resetfields : isNaN(parseFloat(invoiceAmountLocal)) ?
+                            0 : parseFloat(invoiceAmountLocal) }
                         handler={ handleChange }
                         multiline={ false }
                         last={ true }
-                        error={ invoiceAmount === empty ? true : false }
+                        error={ invoiceAmountLocal === 0 ? true : false }
+                        name="invoice_amount"
                     />
                 </div>
                 <div style={ { width: "fit-content" } }>
@@ -113,10 +156,11 @@ export const AddModal = () => {
                         required={ true }
                         type="date"
                         rows={ 1 }
-                        value={ dueDate }
+                        value={ useSelector(state => state.add.reset) ? resetfields : dueDateLocal }
                         handler={ handleChange }
                         multiline={ false }
-                        error={ dueDate === empty ? true : false }
+                        error={ dueDateLocal === empty ? true : false }
+                        name="due_date"
                     />
                     <InputFields
                         placeholder="Add Notes"
@@ -124,10 +168,11 @@ export const AddModal = () => {
                         textLabel="Notes "
                         required={ false }
                         rows={ 7 }
-                        value={ notes }
+                        value={ useSelector(state => state.add.reset) ? resetfields : notesLocal }
                         handler={ handleChange }
                         multiline={ true }
                         last={ true }
+                        name="notes"
                     />
                 </div>
             </Paper>

@@ -8,7 +8,6 @@ import RemoveIcon from '@material-ui/icons/Remove';
 const useStyles = makeStyles((theme) => ({
     buttonMain: {
         borderRadius: pxToVh(10),
-        // backgroundColor: theme.palette.colors.color_97A1A9,
         backgroundColor: theme.palette.colors.color_14AFF1_SKYBLUE,
         color: theme.palette.colors.color_FFFFFF_WHITE,
         textTransform: "capitalize",
@@ -74,14 +73,13 @@ const CustomButton = (props) => {
 
     return (
         <Button
-            // { ...props }
             className={ variant }
             //contained, outlined, active
             variant={ props.variant }
             elevation={ props.elevation }
             onClick={ props.clickhandler }
             startIcon={ icon }
-            autoFocus={props.autoFocus}
+            autoFocus={ props.autoFocus }
             style={ {
                 marginRight: props.last ? pxToVh(0) : pxToVw(20),
                 borderColor: props.activeText ? "#14AFF1" : "#97A1A9",

@@ -12,10 +12,13 @@ import Typography from '@material-ui/core/Typography';
 import CustomButton from './CustomButton';
 import CustomSnackBar from './CustomSnackBar';
 import { pxToVh } from '../../utils/theme';
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
+import { useSelector, useDispatch } from 'react-redux';
+import { editInvoice, addInvoice, resetAddInvoice } from "../../actions/Actions";
+import axios from "axios";
+// import Select from '@material-ui/core/Select';
+// import InputLabel from '@material-ui/core/InputLabel';
+// import MenuItem from '@material-ui/core/MenuItem';
+// import FormControl from '@material-ui/core/FormControl';
 
 const styles = (theme) => ({
     root: {
@@ -85,6 +88,7 @@ const DialogActions = withStyles((theme) => ({
 }))(MuiDialogActions);
 
 const Modal = (props) => {
+    const dispatch = useDispatch()
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -93,23 +97,79 @@ const Modal = (props) => {
     const handleClose = () => {
         setOpen(false);
     };
-    // const style = useStyles()
+    const clearAddInvoice = () => {
+        dispatch(addInvoice("", "", "", 0, "", "", false))
+        dispatch(resetAddInvoice(true))
+    };
+    const clearEditInvoice = () => {
+        dispatch(editInvoice("", ""))
+    };
 
-    // const [age, setAge] = React.useState('');
+    let [
+        // responseData
+        , setResponseData] = React.useState([]);
+    // let [isNext, setIsNext] = React.useState(false);
+    let [pageNumber, setPageNumber] = React.useState(0);
+    const selec = useSelector(state => state.selected.selected[0])
 
-    // const handleChange = (event) => {
-    //     setAge(event.target.value);
-    // };
-    // const handleOpen = () => {
-    //     setOpen(true);
-    // };
+    const isValid = useSelector(state => state.add.valid)
+    const data = {
+        id: useSelector(state => state.add.invoiceNumber),
+        customer_name: useSelector(state => state.add.customerName),
+        customer_number: useSelector(state => state.add.customerNumber),
+        due_date: useSelector(state => state.add.dueDate),
+        invoice_amount: useSelector(state => state.add.invoiceAmount),
+        notes: useSelector(state => state.add.notes),
+    }
+    const FetchData = () => {
+        console.log("inside fetchdata")
+        setPageNumber(pageNumber + 1)
+        let URL = ""
+        if (props.buttontext === "Delete")
+            URL = `http://localhost:8080/Summer_Internship_Backend/api/v1/invoice?delete&id=${selec}`;
+        else if (props.buttontext === "Edit")
+            URL = `http://localhost:8080/Summer_Internship_Backend/api/v1/invoice?edit&id=${selec}`;
+        else {
+            URL = `http://localhost:8080/Summer_Internship_Backend/api/v1/invoice?add&id=${data.id}customer_name=${data.customer_name}&customer_number=${data.customer_number}&due_date=${data.due_date}&invoice_amount=${data.invoice_amount}&notes=${data.notes}`;
+            if (isValid) {
+                axios
+                    .get(URL)
+                    .then((response) => {
+                        setResponseData({ ...response.data });
+                        console.log(response);
+                        console.log("successfully added");
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
+        }
+
+        axios
+            .get(URL)
+            .then((response) => {
+                setResponseData({ ...response.data });
+                console.log(response);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        console.log(URL)
+    };
+
+    React.useEffect(() => {
+        FetchData();
+        // setIsNext(true);
+        console.log("inside useffect")
+    }, []);
+
     return (
         <div>
             <CustomButton
                 variant={ props.variant }
                 clickhandler={ () => handleClickOpen() }
                 startIcon={ props.startIcon }
-                activeText={props.activeText}
+                activeText={ props.activeText }
             >{ props.buttontext }</CustomButton>
             <Dialog
                 PaperProps={ {
@@ -137,24 +197,28 @@ const Modal = (props) => {
                             <div style={ { flex: '1 0 0' } } />
                             <CustomButton
                                 variant="outlined"
-                                clickhandler={ () => handleClose() }
-                                activeText={true}
+                                clickhandler={ () => props.buttontext === "Add" ? clearAddInvoice() : props.buttontext === "Edit" ? clearEditInvoice() : null }
+                                activeText={ true }
                             >Reset</CustomButton>
                         </>
                         : ""
                     }
-                    <CustomSnackBar
-                        variant="contained"
-                        buttontext={ props.buttontext !== "Edit" ? props.buttontext : "Save" }
-                        clickhandler={ () => handleClose() }
-                        autoFocus={true}
-                    />
-                    {/* <CustomButton
-                        variant="contained"
-                        clickhandler={ () => handleClose() }
-                        last={ true }
-                        autoFocus
-                    >{ props.buttontext !== "Edit" ? props.buttontext : "Save" }</CustomButton> */}
+                    { useSelector(state => state.add.valid) ?
+                        <CustomButton
+                            variant="contained"
+                            clickhandler={ () => handleClose() }
+                            last={ true }
+                            autoFocus
+                        >{ props.buttontext !== "Edit" ? props.buttontext : "Save" }</CustomButton>
+                        :
+                        <CustomSnackBar
+                            variant="contained"
+                            buttontext={ props.buttontext !== "Edit" ? props.buttontext : "Save" }
+                        // clickhandler={ () => handleClose() }
+                        />
+                    }
+                    {/* 
+                     */}
                 </DialogActions>
             </Dialog>
         </div>
