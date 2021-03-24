@@ -1,9 +1,9 @@
 import React from 'react';
 import '../App.css';
 import { makeStyles } from '@material-ui/core';
-// import logo from '../assets/companyLogo.svg'
 import { ReactComponent as Logo } from '../assets/logo.svg';
 import { ReactComponent as CompanyLogo } from '../assets/Group 20399.svg';
+// import logo from '../assets/companyLogo.svg'
 // import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({

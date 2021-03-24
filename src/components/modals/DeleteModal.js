@@ -5,7 +5,10 @@ import {
 } from '@material-ui/core';
 import Modal from '../templates/Modal';
 import { pxToVh } from '../../utils/theme';
-
+import {
+    useSelector,
+    // useDispatch 
+} from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     text: {
@@ -21,7 +24,9 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
+
 export const DeleteModal = () => {
+    const selected = useSelector(state => state.selected.selected)
     const classes = useStyles()
 
     return (
@@ -29,7 +34,7 @@ export const DeleteModal = () => {
             variant="outlined"
             buttontext="Delete"
             startIcon="RemoveIcon"
-            activeText={true}
+            activeText={ selected.length > 0 ? true : false }
         >
             <Typography className={ classes.text }>You'll lose your record(s) after this action. We can't recover<br />them once you delete.
                 <br /><br />Are you sure you want to <span className={ classes.warning }>permanently delete</span> them?</Typography>

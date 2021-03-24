@@ -16,12 +16,11 @@ import { EditModal } from '../components/modals/EditModal';
 import { AddModal } from '../components/modals/AddModal';
 import { DeleteModal } from '../components/modals/DeleteModal';
 import { CorrespondenceModal } from '../components/modals/CorrespondenceModal';
+import { searchInvoice } from "../actions/Actions";
+import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        // flexFlow: "row wrap",
-        // display: "flex",
-        // justifyContent: "center",
         minWidth: "fit-content",
         minHeight: "fit-content",
         width: "100vw",
@@ -82,8 +81,17 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
+
+
 const Landing = () => {
     const classes = useStyles()
+    const dispatch = useDispatch()
+    // const [searchTerm, setSearchTerm] = React.useState("");
+
+    const handleChange = (event) => {
+        // console.log(event.target.value)
+        dispatch(searchInvoice(event.target.value))
+    };
 
     return (
         <>
@@ -110,13 +118,13 @@ const Landing = () => {
                                     style={ { border: "none", marginTop: "-3px", marginLeft: pxToVw(-20) } }
                                     placeholder="Search by Invoice Number"
                                     inputProps={ { 'aria-label': 'Search by Invoice Number' } }
-                                    
+                                    onChange={ (event) => handleChange(event) }
                                 />
                                 <IconButton type="submit"
-                                    className={ classes.searchIcon } 
+                                    className={ classes.searchIcon }
                                     aria-label="search"
-                                    onSubmit={(event) => event.preventDefault()}
-                                    onClick={(event) => event.preventDefault()}
+                                    onSubmit={ (event) => event.preventDefault() }
+                                    onClick={ (event) => event.preventDefault() }
                                 >
                                     <SearchIcon />
                                 </IconButton>

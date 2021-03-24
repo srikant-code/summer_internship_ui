@@ -50,9 +50,8 @@ export default function SimpleSnackbar(props) {
 
     return (
         <div>
-            {/* <Button onClick={ handleClick }>Open simple snackbar</Button> */ }
             <CustomButton
-                variant="contained"
+                variant={ props.variant }
                 clickhandler={ props.clickhandler ? props.clickhandler : () => handleClick() }
                 last={ true }
                 autoFocus
@@ -76,7 +75,7 @@ export default function SimpleSnackbar(props) {
                 }
                 action={
                     <React.Fragment>
-                        <IconButton size="large" aria-label="close" color="inherit" onClick={ handleClose }>
+                        <IconButton size="medium" aria-label="close" color="inherit" onClick={ handleClose }>
                             <CloseIcon fontSize="large" />
                         </IconButton>
                     </React.Fragment>

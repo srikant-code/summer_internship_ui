@@ -47,19 +47,9 @@ const textFieldStyles = theme => ({
         paddingLeft: pxToVw(15),
         paddingTop: pxToVh(3),
         flex: "1 0 0",
-        // '&input:focused': {
-        //     border: `${theme.palette.colors.color_356680} solid 4px`,
-        // }
-        // "&": {
-        //     borderColor: "#C52328",
-        //     borderWidth: "5px"
-        // }
         '& .MuiInputBase-multiline': {
             lineHeight: "2rem",
         },
-        // "& .MuiOutlinedInput-notchedOutline": {
-        //     borderColor: "blue"
-        // },
     }
 })
 const CustomTextField = withStyles(textFieldStyles)(TextField)

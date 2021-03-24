@@ -5,8 +5,9 @@ import {
 } from '@material-ui/core';
 import Modal from '../templates/Modal';
 import InputFields from '../templates/InputFields';
+import { useSelector, useDispatch } from 'react-redux';
+import { editInvoice } from "../../actions/Actions";
 // import TextField from '@material-ui/core/TextField';
-
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -19,14 +20,20 @@ const useStyles = makeStyles((theme) => ({
 
 export const EditModal = () => {
     const classes = useStyles()
-    const [invoiceAmount, setInvoiceAmount] = React.useState("")
+    const dispatch = useDispatch()
+    let [invoiceAmount, setInvoiceAmount] = React.useState("")
     const [notes, setNotes] = React.useState("")
+    const editinvamtstate = useSelector(state => state.edit.editInvoiceAmount)
+    const selected = useSelector(state => state.selected.selected)
 
     const handleChange = (event) => {
         if (event.target.id === "invoiceAmount")
             setInvoiceAmount(event.target.value)
         else if (event.target.id === "notes")
             setNotes(event.target.value)
+        dispatch(editInvoice(invoiceAmount, notes))
+        if (editinvamtstate === "")
+            setInvoiceAmount = editinvamtstate
     };
 
     return (
@@ -34,6 +41,7 @@ export const EditModal = () => {
             variant="outlined"
             buttontext="Edit"
             startIcon="EditIcon"
+            activeText={ selected.length === 1 ? true : false }
         >
             <Paper component="form"
                 className={ classes.formControl }
@@ -47,6 +55,7 @@ export const EditModal = () => {
                     value={ invoiceAmount }
                     handler={ handleChange }
                     multiline={ false }
+                    name="invoice_amount"
                 />
                 <InputFields
                     placeholder="Add Notes"
@@ -58,7 +67,9 @@ export const EditModal = () => {
                     handler={ handleChange }
                     multiline={ true }
                     last={ true }
+                    name="notes"
                 />
+                <input name="id" value="d" style={ { display: "none" } } />
             </Paper>
         </Modal>
     )
